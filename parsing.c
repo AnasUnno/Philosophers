@@ -1,7 +1,16 @@
-#include <pthread.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/18 00:54:17 by marvin            #+#    #+#             */
+/*   Updated: 2023/05/18 00:54:17 by marvin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "philo.h"
 
 void ft_perror()
 {
@@ -26,7 +35,7 @@ void pars_args(int ac, char **av)
 	while (av[i])
 	{
 		j = 0;
-		if (av[i][j] == '-' || av[i][j] == '+')
+		if (av[i][j] == '+')
 				j++;
 		while (av[i][j])
 		{
@@ -77,13 +86,4 @@ void	check_spaces(char **av)
 			ft_perror();
 		i++;
 	}
-}
-
-int main(int ac, char **av)
-{
-	pars_args(ac, av);
-	check_empty(ac, av);
-	check_spaces(av);
-	printf("suca bliat");
-	return 0;
 }
