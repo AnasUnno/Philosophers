@@ -12,21 +12,13 @@
 
 #include "philo.h"
 
-int alocation(t_data *data, t_philo *philos)
+t_philo *initialize_philos(t_data *data)
 {
-	philos = malloc(sizeof(t_philo) * data->n_philos);
-	if (philos)
-		return (NULL);
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->n_philos);
-	if (!data->forks)
-		return (NULL);
-	return (1);
-}
-
-void initialize_philos(t_data *data, t_philo *philos)
-{
+	t_philo	*philos;
 	int i;
 
+	
+	philos = malloc(sizeof(t_philo) * data->n_philos);
 	i = 0;
 	while (i < data->n_philos)
 	{
@@ -34,15 +26,21 @@ void initialize_philos(t_data *data, t_philo *philos)
 		philos[i].philo_id = i + 1;
 		philos[i].dying_time = data->t_die;
 		philos[i].eat_times = 0;
+		philos[i].last_meal = 0;
 		i++;
 	}
+	return (philos);
 }
 
-void	initialize_forks(t_data	*data, t_philo *philo)
+pthread_mutex_t	*initialize_forks(t_data	*data, t_philo *philo)
 {
 	int	i;
 
 	i = 0;
+	
+	pthread_mutex_init(&data->print_mutex, NULL);
+	pthread_mutex_init(&data->meal_mutex, NULL);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->n_philos);
 	while (i < data->n_philos)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
@@ -57,31 +55,26 @@ void	initialize_forks(t_data	*data, t_philo *philo)
 	}
 	philo[i].right_fork = &data->forks[i];
 	philo[i].left_fork = &data->forks[0];
+	return (data->forks);
 }
 
-int initialize_data(t_data *data, int ac, char **av)
+t_data *initialize_data(int ac, char **av)
 {
-	data->n_philos = (unsigned int)ft_atoi(av[1]);
+	t_data	*data;
+	
+	if (ft_atoi(av[1]) < 1)
+		ft_perror();
+	data = malloc(sizeof(t_data));
+	data->n_philos = ft_atoi(av[1]);
 	data->t_die = (unsigned int)ft_atoi(av[2]);
 	data->t_eat = (unsigned int)ft_atoi(av[3]);
 	data->t_sleep = (unsigned int)ft_atoi(av[4]);
 	if (ac == 6)
 		data->n_eat = ft_atoi(av[5]);
 	else
-		data->n_eat = -2;
+		data->n_eat = -1;
 	data->all_finished = 0;
 	data->stop_flag = 0;
-	data->death_flag = 0; 
-	if (data->n_philos < 1)
-		return (0);
-	return (1);
-}
-
-int initialization_caller(t_data *data, int ac, char **av)
-{
-	if (!initialise_data(data, ac, av))
-		return (0);
-	if (!allocation(data))
-		return (0);
-	return (1);
+	data->t_start = get_curr_time();
+	return (data);
 }
