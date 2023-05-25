@@ -6,7 +6,7 @@
 #    By: araji-af <araji-af@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/22 19:49:54 by araji-af          #+#    #+#              #
-#    Updated: 2023/05/23 19:39:15 by araji-af         ###   ########.fr        #
+#    Updated: 2023/05/25 20:04:13 by araji-af         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME = philo
 
 OBJ = $(SRCS:.c=.o)
 
-FLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
+FLAGS = -Wall -Wextra -Werror
 
 %.o : %.c philo.h
 	cc $(FLAGS) -c $< -o $@ 

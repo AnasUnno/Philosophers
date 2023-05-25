@@ -12,13 +12,20 @@
 
 #include "philo.h"
 
-t_philo *initialize_philos(t_data *data)
+t_philo	*initialize_philos(t_data *data)
 {
 	t_philo	*philos;
-	int i;
+	int		i;
 
-	
 	philos = malloc(sizeof(t_philo) * data->n_philos);
+	if (!philos)
+	{
+		free(data->forks);
+		data->forks = NULL;
+		data = NULL;
+		free(data);
+		return (NULL);
+	}
 	i = 0;
 	while (i < data->n_philos)
 	{
@@ -32,15 +39,16 @@ t_philo *initialize_philos(t_data *data)
 	return (philos);
 }
 
-pthread_mutex_t	*initialize_forks(t_data	*data, t_philo *philo)
+pthread_mutex_t	*initialize_forks(t_data	*data, t_philo	*philo)
 {
 	int	i;
 
 	i = 0;
-	
 	pthread_mutex_init(&data->print_mutex, NULL);
 	pthread_mutex_init(&data->meal_mutex, NULL);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->n_philos);
+	if (!data->forks)
+		return (NULL);
 	while (i < data->n_philos)
 	{
 		pthread_mutex_init(&data->forks[i], NULL);
@@ -58,23 +66,42 @@ pthread_mutex_t	*initialize_forks(t_data	*data, t_philo *philo)
 	return (data->forks);
 }
 
-t_data *initialize_data(int ac, char **av)
+t_data	*initialize_data(int ac, char **av)
 {
 	t_data	*data;
-	
-	if (ft_atoi(av[1]) < 1)
-		ft_perror();
-	data = malloc(sizeof(t_data));
-	data->n_philos = ft_atoi(av[1]);
-	data->t_die = (unsigned int)ft_atoi(av[2]);
-	data->t_eat = (unsigned int)ft_atoi(av[3]);
-	data->t_sleep = (unsigned int)ft_atoi(av[4]);
-	if (ac == 6)
-		data->n_eat = ft_atoi(av[5]);
+
+	data = NULL;
+	if (ft_atoi(av[1]) && ft_atoi(av[2]) && ft_atoi(av[3]) && ft_atoi(av[4]))
+	{
+		data = malloc(sizeof(t_data));
+		if (!data)
+			return (NULL);
+		data->n_philos = ft_atoi(av[1]);
+		data->t_die = (unsigned int)ft_atoi(av[2]);
+		data->t_eat = (unsigned int)ft_atoi(av[3]);
+		data->t_sleep = (unsigned int)ft_atoi(av[4]);
+	}
 	else
-		data->n_eat = -1;
-	data->all_finished = 0;
+		ft_perror();
+	helper(ac, av, data);
 	data->stop_flag = 0;
 	data->t_start = get_curr_time();
 	return (data);
+}
+
+void	helper(int ac, char **av, t_data *data)
+{
+	if (ac == 6)
+	{
+		if (ft_atoi(av[5]))
+			data->n_eat = ft_atoi(av[5]);
+		else
+		{
+			free(data);
+			data = NULL;
+			ft_perror();
+		}
+	}
+	else
+		data->n_eat = -1;
 }

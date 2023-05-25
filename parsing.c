@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-void ft_perror()
+void	ft_perror(void)
 {
 	printf("Parametres are wrong\n");
 	printf("Parametres should be given in this order :\n");
@@ -20,14 +20,14 @@ void ft_perror()
 	printf("[2]-time_to_die (in milliseconds)\n");
 	printf("[3]-time_to_eat (in milliseconds)\n");
 	printf("[4]-time_to_sleep (in milliseconds)\n");
-	printf("[5]-number_of_times_each_philosopher_must_eat (optional argument)\n");
+	printf("[5]-number_of_times_each_philosopher_must_eat(optional argument)\n");
 	exit(1);
 }
 
-void pars_args(int ac, char **av)
+void	pars_args(int ac, char **av)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	if (ac != 5 && ac != 6)
 		ft_perror();
